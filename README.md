@@ -23,11 +23,11 @@ $ npm install
 # copy schema configuration then edit the file
 $ cp .env.example .env
 
-# copy schema database
-$ npm run generate-schema
-
 # migrate database
-$ npx prisma migrate deploy
+$ npm run migrate:deploy
+
+# seeding database
+$ npm run seed
 
 # start application
 $ npm run start

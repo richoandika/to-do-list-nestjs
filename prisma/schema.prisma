@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  first_name String   @map("firstName")
+  last_name  String   @map("lastName")
+  email      String
+  password   String
+  is_active  Boolean  @default(true) @map("isActive")
+  created_at DateTime @default(now()) @map("createdAt")
+  updated_at DateTime @updatedAt @map("updatedAt")
+
+  @@map("users")
+}
+
+model Todo {
+  id           Int      @id @default(autoincrement())
+  title        String
+  body         String?
+  is_completed Boolean  @default(false) @map("isCompleted")
+  user_id      Int?     @map("userId")
+  created_at   DateTime @default(now()) @map("createdAt")
+  updated_at   DateTime @updatedAt @map("updatedAt")
+
+  @@map("todos")
+}

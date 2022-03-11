@@ -29,31 +29,36 @@ export class TodosService {
     }
   }
 
-  async findV1(id: string): Promise<Todo> {
+  async findV1(id: number): Promise<Todo> {
     try {
       const todo = await this.todosRepository.find(id);
-      if (!todo) throw new NotFoundException();
+      if (!todo) {
+        throw new NotFoundException();
+      }
       return todo;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async updateV1(id: string, updateTodoDto: UpdateTodoDto): Promise<void> {
+  async updateV1(id: number, updateTodoDto: UpdateTodoDto): Promise<void> {
     try {
-      const { title, body, is_completed: isCompleted } = updateTodoDto;
-      await this.todosRepository.update(id, {
-        title,
-        body,
-        isCompleted,
-      });
+      const todo = await this.todosRepository.find(id);
+      if (!todo) {
+        throw new NotFoundException();
+      }
+      await this.todosRepository.update(id, updateTodoDto);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async deleteV1(id: string): Promise<void> {
+  async deleteV1(id: number): Promise<void> {
     try {
+      const todo = await this.todosRepository.find(id);
+      if (!todo) {
+        throw new NotFoundException();
+      }
       await this.todosRepository.delete(id);
     } catch (error) {
       throw new InternalServerErrorException(error);

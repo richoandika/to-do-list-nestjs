@@ -5,7 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import { PrismaService } from './prisma/prisma.service';
+import { PrismaService } from 'nestjs-prisma';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

@@ -8,6 +8,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -32,19 +33,22 @@ export class TodosController {
 
   @Version('1')
   @Get(':id')
-  findV1(@Param('id') id: string) {
+  findV1(@Param('id', ParseIntPipe) id: number) {
     return this.todosService.findV1(id);
   }
 
   @Version('1')
   @Put(':id')
-  updateV1(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+  updateV1(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTodoDto: UpdateTodoDto,
+  ) {
     return this.todosService.updateV1(id, updateTodoDto);
   }
 
   @Version('1')
   @Delete(':id')
-  deleteV1(@Param('id') id: string) {
+  deleteV1(@Param('id', ParseIntPipe) id: number) {
     return this.todosService.deleteV1(id);
   }
 }

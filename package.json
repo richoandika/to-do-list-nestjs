@@ -1,10 +1,19 @@
 {
-  "name": "jam",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "to-do-list-nestjs",
+  "version": "0.0.2",
+  "description": "To-Do List Rest API built with NestJS",
+  "author": "Richo Andika",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "keywords": [
+    "nestjs",
+    "prisma",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/richoandika/to-do-list-nestjs.git"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -19,7 +28,16 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "generate-schema": "rimraf prisma && mkdir prisma && cat src/*/*.prisma > prisma/schema.prisma"
+    "migrate:dev": "prisma migrate dev --preview-feature",
+    "migrate:dev:create": "prisma migrate dev --create-only --preview-feature",
+    "migrate:reset": "prisma migrate reset --preview-feature",
+    "migrate:deploy": "npx prisma migrate deploy --preview-feature",
+    "migrate:status": "npx prisma migrate status --preview-feature",
+    "migrate:resolve": "npx prisma migrate resolve --preview-feature",
+    "prisma:studio": "npx prisma studio",
+    "prisma:generate": "npx prisma generate",
+    "prisma:generate:watch": "npx prisma generate --watch",
+    "seed": "prisma db seed"
   },
   "dependencies": {
     "@nestjs/common": "^8.4.0",
@@ -27,11 +45,15 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/platform-fastify": "^8.4.0",
     "@prisma/client": "^3.10.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "nestjs-prisma": "^0.15.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0-beta.0",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -72,5 +94,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
