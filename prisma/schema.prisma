@@ -2,32 +2,44 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   first_name String   @map("firstName")
   last_name  String   @map("lastName")
-  email      String
+  email      String   @unique
   password   String
-  is_active  Boolean  @default(true) @map("isActive")
+  role       Role     @default(USER)
+  is_active  Boolean  @default(false) @map("isActive")
   created_at DateTime @default(now()) @map("createdAt")
   updated_at DateTime @updatedAt @map("updatedAt")
 
+  todo Todo[]
   @@map("users")
 }
 
 model Todo {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   title        String
   body         String?
+  user_id      String   @map("userId")
   is_completed Boolean  @default(false) @map("isCompleted")
-  user_id      Int?     @map("userId")
   created_at   DateTime @default(now()) @map("createdAt")
   updated_at   DateTime @updatedAt @map("updatedAt")
 
+  user User @relation(fields: [user_id], references: [id])
   @@map("todos")
 }

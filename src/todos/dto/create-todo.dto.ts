@@ -1,13 +1,13 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class CreateTodoDto {
   @IsNotEmpty()
-  @MinLength(3)
+  @Length(3)
   @IsString()
-  title: string;
+  readonly title: string;
 
   @IsNotEmpty()
-  @MinLength(3)
+  @Length(3)
   @IsString()
-  body: string;
+  readonly body: string;
 }

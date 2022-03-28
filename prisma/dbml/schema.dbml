@@ -1,0 +1,34 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  first_name String [not null]
+  last_name String [not null]
+  email String [unique, not null]
+  password String [not null]
+  role Role [not null, default: 'USER']
+  is_active Boolean [not null, default: false]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  todo Todo [not null]
+}
+
+Table Todo {
+  id String [pk]
+  title String [not null]
+  body String
+  user_id String [not null]
+  is_completed Boolean [not null, default: false]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  user User [not null]
+}
+
+Enum Role {
+  ADMIN
+  USER
+}
+
+Ref: Todo.user_id > User.id

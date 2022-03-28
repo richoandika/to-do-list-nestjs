@@ -1,4 +1,3 @@
-import { Expose } from 'class-transformer';
 import {
   IsBooleanString,
   IsDateString,
@@ -6,10 +5,14 @@ import {
   IsString,
 } from 'class-validator';
 
-export class FilterTodoDto {
+export class FilterUserDto {
   @IsOptional()
   @IsString()
-  readonly title?: string;
+  readonly first_name?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly last_name?: string;
 
   @IsOptional()
   @IsDateString()
@@ -17,5 +20,5 @@ export class FilterTodoDto {
 
   @IsOptional()
   @IsBooleanString()
-  readonly is_completed?: string;
+  readonly is_active?: string;
 }

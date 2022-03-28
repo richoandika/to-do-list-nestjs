@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Todo } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
-import { CreateTodoDto } from '../dto/create-todo.dto';
 import { FilterTodoDto } from '../dto/filter-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 
@@ -9,11 +8,17 @@ import { UpdateTodoDto } from '../dto/update-todo.dto';
 export class TodosRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(filterTodoDto: FilterTodoDto): Promise<Todo[]> {
+  async findAllWithUserId(
+    userId,
+    filterTodoDto: FilterTodoDto,
+  ): Promise<Todo[]> {
     const { title, date, is_completed } = filterTodoDto;
     return await this.prisma.todo.findMany({
       where: {
         AND: [
+          {
+            user_id: { equals: userId || undefined },
+          },
           {
             title: { contains: title || undefined },
           },
@@ -22,7 +27,7 @@ export class TodosRepository {
           },
           {
             is_completed: {
-              equals: is_completed === 'true' ? true : false || undefined,
+              equals: is_completed == 'true' || undefined,
             },
           },
         ],
@@ -31,24 +36,33 @@ export class TodosRepository {
     });
   }
 
-  async create(createTodoDto: CreateTodoDto): Promise<Todo> {
+  async create(createTodoDto): Promise<Todo> {
     return await this.prisma.todo.create({ data: createTodoDto });
   }
 
-  async find(id: number): Promise<Todo> {
-    return await this.prisma.todo.findUnique({
-      where: { id },
+  async findWithUserId(userId: string, todoId: string): Promise<Todo> {
+    return await this.prisma.todo.findFirst({
+      where: {
+        AND: [
+          {
+            user_id: { equals: userId },
+          },
+          {
+            id: { equals: todoId },
+          },
+        ],
+      },
     });
   }
 
-  async update(id: number, updateTodoDto: UpdateTodoDto): Promise<Todo> {
+  async update(id: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
     return await this.prisma.todo.update({
       where: { id },
       data: updateTodoDto,
     });
   }
 
-  async delete(id: number): Promise<Todo> {
+  async remove(id: string): Promise<Todo> {
     return await this.prisma.todo.delete({
       where: { id },
     });

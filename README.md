@@ -26,9 +26,6 @@ $ cp .env.example .env
 # migrate database
 $ npm run migrate:deploy
 
-# seeding database
-$ npm run seed
-
 # start application
 $ npm run start
 ```

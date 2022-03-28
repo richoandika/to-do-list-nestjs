@@ -1,17 +1,14 @@
-import { Type } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IntersectionType } from '@nestjs/mapped-types';
+import { IsBoolean, IsNotEmpty } from 'class-validator';
+import { CreateTodoDto } from './create-todo.dto';
 
-export class UpdateTodoDto {
-  @IsNotEmpty()
-  @IsString()
-  title: string;
-
-  @IsNotEmpty()
-  @IsString()
-  body: string;
-
+export class AdditionalUpdateTodoDto {
   @IsNotEmpty()
   @IsBoolean()
-  @Type(() => Boolean)
-  is_completed: boolean;
+  readonly is_completed: boolean;
 }
+
+export class UpdateTodoDto extends IntersectionType(
+  CreateTodoDto,
+  AdditionalUpdateTodoDto,
+) {}

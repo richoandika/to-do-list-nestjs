@@ -1,67 +1,81 @@
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { FilterTodoDto } from './dto/filter-todo.dto';
 import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateTodoDto } from './dto/update-todo.dto';
-import { Todo } from '@prisma/client';
+import { Todo, User } from '@prisma/client';
 import { TodosRepository } from './repository/todos.repository';
+import { CreateTodoDto } from './dto/create-todo.dto';
+import { FilterTodoDto } from './dto/filter-todo.dto';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Injectable()
 export class TodosService {
   constructor(private readonly todosRepository: TodosRepository) {}
 
-  async findAllV1(filterTodoDto: FilterTodoDto): Promise<Todo[] | void> {
+  async findAllV1(
+    user: User,
+    filterTodoDto: FilterTodoDto,
+  ): Promise<Todo[] | void> {
     try {
-      return await this.todosRepository.findAll(filterTodoDto);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+      return await this.todosRepository.findAllWithUserId(
+        user.id,
+        filterTodoDto,
+      );
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 
-  async createV1(createTodoDto: CreateTodoDto): Promise<void> {
+  async createV1(user: User, createTodoDto: CreateTodoDto): Promise<Todo> {
     try {
-      await this.todosRepository.create(createTodoDto);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+      const data = {
+        ...createTodoDto,
+        user_id: user.id,
+      };
+      return await this.todosRepository.create(data);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 
-  async findV1(id: number): Promise<Todo> {
+  async findOneV1(user: User, todoId: string): Promise<Todo> {
     try {
-      const todo = await this.todosRepository.find(id);
+      const todo = await this.todosRepository.findWithUserId(user.id, todoId);
       if (!todo) {
         throw new NotFoundException();
       }
       return todo;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 
-  async updateV1(id: number, updateTodoDto: UpdateTodoDto): Promise<void> {
+  async updateV1(
+    user: User,
+    todoId: string,
+    updateTodoDto: UpdateTodoDto,
+  ): Promise<Todo> {
     try {
-      const todo = await this.todosRepository.find(id);
+      const todo = await this.todosRepository.findWithUserId(user.id, todoId);
       if (!todo) {
         throw new NotFoundException();
       }
-      await this.todosRepository.update(id, updateTodoDto);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+      return await this.todosRepository.update(todoId, updateTodoDto);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 
-  async deleteV1(id: number): Promise<void> {
+  async removeV1(user: User, todoId: string): Promise<Todo> {
     try {
-      const todo = await this.todosRepository.find(id);
+      const todo = await this.todosRepository.findWithUserId(user.id, todoId);
       if (!todo) {
         throw new NotFoundException();
       }
-      await this.todosRepository.delete(id);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+      return await this.todosRepository.remove(todoId);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 }
